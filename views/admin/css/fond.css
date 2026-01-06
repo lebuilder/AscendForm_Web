@@ -1,0 +1,16 @@
+:root{
+  --night-bg: #0b1d3d;
+  --accent: #6fd3ff;
+}
+
+html,body{
+  height:100%;
+}
+
+body{
+  background: var(--night-bg);
+  color: #e6f6ff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}

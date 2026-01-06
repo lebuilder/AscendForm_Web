@@ -1,0 +1,169 @@
+.navbar-brand{ letter-spacing:0.4px; }
+
+/* Taille du logo dans la navbar (responsive)
+   - version desktop: 56x56
+   - version mobile: 40x40
+*/
+.navbar-brand .navbar-logo{
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+@media (max-width: 576px){
+  .navbar-brand .navbar-logo{ width:40px; height:40px; }
+}
+
+header{ background: linear-gradient(180deg, rgba(0,0,0,0.15), transparent); }
+
+@media (max-width: 768px){
+  .navbar-brand span{ font-size: 1rem; }
+}
+
+@media (max-width: 576px){
+  header{ padding: 2rem 1rem; }
+}
+
+/* Animations des liens de navigation */
+.nav-link-animated {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.nav-link-animated .nav-icon {
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.nav-link-animated .nav-text {
+  position: relative;
+  z-index: 1;
+}
+
+/* Effet de soulignement animé */
+.nav-link-animated::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #6fd3ff, #4fb3ff);
+  transform: translateX(-50%);
+  transition: width 0.3s ease;
+}
+
+/* Effet de fond au survol */
+.nav-link-animated::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(111, 211, 255, 0.1);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+  z-index: 0;
+}
+
+.nav-link-animated:hover::before {
+  width: 80%;
+}
+
+.nav-link-animated:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Animation des icônes au survol */
+.nav-link-animated:hover .nav-icon {
+  transform: scale(1.2) rotate(10deg);
+  filter: drop-shadow(0 0 8px rgba(111, 211, 255, 0.6));
+}
+
+/* Animation spécifique pour chaque lien */
+.nav-link-animated:nth-child(1):hover .nav-icon {
+  animation: bounce-home 0.6s ease;
+}
+
+.nav-link-animated:nth-child(2):hover .nav-icon {
+  animation: shake-contact 0.5s ease;
+}
+
+.nav-link-animated:nth-child(3):hover .nav-icon {
+  animation: pulse-profile 0.8s ease;
+}
+
+@keyframes bounce-home {
+  0%, 100% { transform: translateY(0) scale(1.2); }
+  50% { transform: translateY(-8px) scale(1.3); }
+}
+
+@keyframes shake-contact {
+  0%, 100% { transform: translateX(0) rotate(0deg) scale(1.2); }
+  25% { transform: translateX(-5px) rotate(-10deg) scale(1.25); }
+  75% { transform: translateX(5px) rotate(10deg) scale(1.25); }
+}
+
+@keyframes pulse-profile {
+  0%, 100% { transform: scale(1.2); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.8; }
+}
+
+/* Animation du logo de la marque */
+.navbar-brand {
+  transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+  transform: scale(1.05);
+}
+
+.navbar-brand .navbar-logo {
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover .navbar-logo {
+  transform: rotate(360deg);
+  filter: drop-shadow(0 0 10px rgba(111, 211, 255, 0.5));
+}
+
+/* Effet actif sur le lien */
+.nav-link-animated.active,
+.nav-link-animated:active {
+  background: rgba(111, 211, 255, 0.15);
+  color: #6fd3ff !important;
+}
+
+.nav-link-animated.active::before {
+  width: 80%;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .nav-link-animated {
+    justify-content: flex-start;
+    margin: 0.25rem 0;
+    border-radius: 8px;
+  }
+
+  .nav-link-animated::before {
+    left: 0;
+    transform: translateX(0);
+    width: 3px;
+    height: 100%;
+    top: 0;
+  }
+
+  .nav-link-animated:hover::before {
+    width: 3px;
+  }
+}

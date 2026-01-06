@@ -1,0 +1,68 @@
+/* AscendForm - Styles pour gestion_utilisateurs.php */
+
+.admin-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 2.5rem 1rem 0 1rem;
+}
+
+.admin-card {
+    background: rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.filter-section {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(111, 211, 255, 0.2);
+}
+
+.user-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(111, 211, 255, 0.2);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
+}
+
+.user-card:hover {
+    transform: translateX(5px);
+    border-color: #6fd3ff;
+    background: rgba(111, 211, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(111, 211, 255, 0.2);
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-email {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #6fd3ff;
+    margin-bottom: 0.5rem;
+}
+
+.user-name {
+    color: #ccc;
+    margin-bottom: 0.3rem;
+}
+
+.user-meta {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.user-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}

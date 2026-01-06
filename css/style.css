@@ -395,7 +395,43 @@ textarea:focus{
   box-shadow: 
     0 8px 32px rgba(0,0,0,0.3),
     inset 0 1px 0 rgba(255,255,255,0.1);
+  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
+}
+
+/* Sélecteur du groupe musculaire: fond bleu + texte bleu clair */
+/* Forcer style du select (désactiver apparence native) */
+.form-select.exercise-muscle,
+.form-select.exercise-muscle:focus {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Forcer totalement la couleur de fond sur le bleu du background */
+  --bs-form-select-bg: var(--night-bg) !important;
+  background: var(--night-bg) !important;
+  background-color: var(--night-bg) !important;
+  background-image: none !important;
+  color: var(--accent) !important;            /* bleu clair pour l'écriture */
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 0.15rem rgba(111, 211, 255, 0.25) !important;
+}
+
+.form-select.exercise-muscle option {
+  background: var(--night-bg) !important; /* garantir le fond du menu déroulant */
+  background-color: var(--night-bg) !important;
+  color: var(--accent) !important;
+}
+
+.form-select.exercise-muscle option[disabled] {
+  color: var(--accent) !important; /* libellé "— Groupe musculaire —" en bleu clair */
+}
+
+/* Sélecteur super spécifique si d'autres CSS écrasent nos styles */
+.exercise-card .form-select.exercise-muscle,
+.exercise-card .form-select.exercise-muscle:focus {
+  background: var(--night-bg) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
 }
 
 .confirm-reset.show {

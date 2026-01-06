@@ -1,0 +1,145 @@
+/* AscendForm - Styles pour views_logs.php */
+
+.admin-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 2.5rem 1rem 0 1rem;
+}
+
+.admin-card {
+    background: rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    max-width: 1100px;
+    margin: 2.5rem auto;
+}
+
+.filter-section {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.log-entry {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid #4CAF50; /* default INFO */
+    padding: 0.75rem 0.9rem;
+    margin-bottom: 0.45rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-size: .8rem;
+    position: relative;
+}
+
+.log-entry:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(3px);
+}
+
+.log-entry.error {
+    border-left-color: #f44336;
+}
+
+.log-entry.warning {
+    border-left-color: #ff9800;
+}
+
+.log-entry.error, .log-entry.ERROR { border-left-color: #f44336; }
+.log-entry.SECURITY { border-left-color: #ff1744; background: rgba(255,23,68,0.06); }
+.log-entry.WARN { border-left-color: #ff9800; }
+.log-entry.AUDIT { border-left-color: #6fd3ff; }
+.log-entry.INFO { border-left-color: #4CAF50; }
+
+.log-level-badge {
+    display:inline-block;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: .65rem;
+    letter-spacing:.5px;
+    font-weight:600;
+    margin-right:.4rem;
+    text-transform:uppercase;
+}
+.log-level-INFO { background: rgba(76,175,80,0.15); color:#6fd3ff; }
+.log-level-WARN { background: rgba(255,152,0,0.18); color:#ffcb7d; }
+.log-level-ERROR { background: rgba(244,67,54,0.18); color:#ff9b9b; }
+.log-level-SECURITY { background: rgba(255,23,68,0.25); color:#ffb3b3; }
+.log-level-AUDIT { background: rgba(111,211,255,0.18); color:#6fd3ff; }
+
+.log-entry.expanded { background: rgba(255,255,255,0.06); }
+.log-json { font-family: 'Courier New', monospace; white-space: pre; background: rgba(0,0,0,0.35); padding:.6rem .7rem; border-radius:6px; margin-top:.5rem; font-size:.7rem; max-height:240px; overflow:auto; }
+
+.logs-toolbar { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-bottom:1rem; }
+.logs-toolbar .badge-count { background: rgba(111,211,255,0.15); color:#6fd3ff; padding:.4rem .7rem; border-radius:8px; font-size:.7rem; }
+.toggle-raw-btn { background: rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); color:#e6f6ff; font-size:.7rem; padding:.4rem .7rem; border-radius:8px; cursor:pointer; }
+.toggle-raw-btn.active { background: rgba(111,211,255,0.25); border-color:#6fd3ff; }
+.logs-toolbar .btn-warning { background: linear-gradient(90deg,#f6d365,#fda085); border:none; color:#0b1d3d; box-shadow:0 6px 16px rgba(0,0,0,0.25); }
+
+.replay-btn { position:absolute; top:6px; right:6px; font-size:.6rem; padding:2px 6px; }
+
+.filter-inline { display:flex; gap:.5rem; flex-wrap:wrap; }
+.filter-inline select, .filter-inline input { background:#0b1d3d; color:#6fd3ff; border-color:#6fd3ff; font-size:.7rem; }
+.filter-inline select:focus, .filter-inline input:focus { box-shadow:0 0 0 0.2rem rgba(111,211,255,0.25); }
+
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.log-action {
+    font-weight: bold;
+    color: #6fd3ff;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.log-timestamp {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.log-email {
+    color: #ccc;
+    margin-bottom: 0.3rem;
+}
+
+.log-details {
+    font-size: 0.85rem;
+    color: #888;
+    font-family: 'Courier New', monospace;
+}
+
+/* Force blue dropdown with white text in filters */
+.filter-section .form-select {
+    background-color: rgba(11, 29, 61, 0.85);
+    color: #ffffff;
+    border-color: rgba(111, 211, 255, 0.35);
+}
+
+.filter-section .form-select:focus {
+    background-color: rgba(11, 29, 61, 0.95);
+    color: #ffffff;
+    border-color: #6fd3ff;
+    box-shadow: 0 0 0 0.2rem rgba(111, 211, 255, 0.25);
+}
+
+/* Dropdown list panel + items */
+.filter-section .form-select option {
+    background-color: #0b1d3d;
+    color: #ffffff;
+}
+
+.filter-section .form-select option:checked,
+.filter-section .form-select option:focus,
+.filter-section .form-select option:hover {
+    background-color: #2a63c9;
+    color: #ffffff;
+}
