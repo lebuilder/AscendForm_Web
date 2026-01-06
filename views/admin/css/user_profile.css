@@ -1,0 +1,14 @@
+/* AscendForm - Styles profil utilisateur admin */
+.user-profile-container {}
+.dashboard-section form .btn { min-width: 160px; }
+.dashboard-section .log-item { font-size:.7rem; padding:.4rem .55rem; border:1px dashed rgba(255,255,255,0.12); border-radius:10px; background:rgba(255,255,255,0.03); margin-bottom:.4rem; }
+.dashboard-section .log-item.security { border-left:3px solid #ff6d6d; }
+.dashboard-section .log-item .action { background:#6fd3ff; color:#0b1d3d; border-radius:999px; padding:.1rem .45rem; font-weight:600; font-size:.65rem; margin-right:.4rem; }
+.dashboard-section input.form-control, .dashboard-section select.form-select { background:#0b1d3d; border:1px solid #1f3b60; color:#e6f6ff; }
+.dashboard-section input.form-control:focus { border-color:#6fd3ff; box-shadow:0 0 0 0.15rem rgba(111,211,255,0.25); }
+.dashboard-section label.form-label { font-size:.75rem; letter-spacing:.5px; text-transform:uppercase; color:#93bde6; }
+.dashboard-section .form-check-label { text-transform:none; letter-spacing:0; }
+.dashboard-section .btn-primary { background:linear-gradient(90deg,#6fd3ff,#667eea); border:none; }
+.dashboard-section .btn-warning { background:linear-gradient(90deg,#f6d365,#fda085); border:none; color:#0b1d3d; }
+.dashboard-section .btn-secondary { background:linear-gradient(90deg,#8e9eab,#6c7986); border:none; }
+.dashboard-section .alert { font-size:.8rem; }

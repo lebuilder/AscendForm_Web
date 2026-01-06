@@ -142,6 +142,27 @@
     nameInput.placeholder = 'Nom de l\'exercice (ex: Développé couché)';
     nameInput.value = exData && exData.name ? exData.name : '';
 
+    // Muscle selector
+    const muscleSelect = document.createElement('select');
+    muscleSelect.className = 'form-select form-select-sm mb-2 exercise-muscle';
+    const muscles = ['','Pectoraux','Dos','Jambes','Épaules','Biceps','Triceps','Abdos'];
+    muscles.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m; opt.textContent = m ? m : '— Groupe musculaire —';
+      // Force style on options (may be limited by OS rendering)
+      opt.style.backgroundColor = 'var(--night-bg)';
+      opt.style.color = 'var(--accent)';
+      muscleSelect.appendChild(opt);
+    });
+    if (exData && exData.muscle) muscleSelect.value = exData.muscle;
+
+    // Hard-force select appearance with inline styles
+    muscleSelect.style.setProperty('background', 'var(--night-bg)', 'important');
+    muscleSelect.style.setProperty('backgroundColor', 'var(--night-bg)', 'important');
+    muscleSelect.style.setProperty('color', 'var(--accent)', 'important');
+    muscleSelect.style.setProperty('borderColor', 'var(--accent)', 'important');
+    muscleSelect.style.setProperty('backgroundImage', 'none', 'important');
+
     const setsContainer = document.createElement('div');
     setsContainer.className = 'sets-container mb-2';
 
@@ -152,6 +173,7 @@
     addSetBtn.addEventListener('click', ()=>{ setsContainer.appendChild(createSetRow()); });
 
     cardBody.appendChild(nameInput);
+    cardBody.appendChild(muscleSelect);
     cardBody.appendChild(setsContainer);
     cardBody.appendChild(addSetBtn);
     card.appendChild(cardBody);
@@ -175,7 +197,10 @@
   }
 
   function addExercise(exData){
-    exercisesContainer.appendChild(createExerciseCard(exData));
+    const card = createExerciseCard(exData);
+    exercisesContainer.appendChild(card);
+    // expose muscle value in data when collecting
+    // nothing extra needed; we'll read from DOM later
   }
 
   // Boutons pour ajouter ou réinitialiser les exercices dans le formulaire
@@ -214,27 +239,6 @@
     });
   });
 
-  // Bouton d'export JSON : télécharge toutes les séances et exercices au format JSON
-  const exportBtn = document.getElementById('exportJsonBtn');
-  function exportWorkoutsToJson(){
-    const items = loadWorkouts();
-    if(!items || items.length===0){ alert('Aucune séance à exporter.'); return; }
-    const json = JSON.stringify(items, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const now = new Date();
-    const pad = n => String(n).padStart(2, '0');
-    const filename = `seances_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}.json`;
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-  if(exportBtn) exportBtn.addEventListener('click', exportWorkoutsToJson);
-
   // Fonction pour afficher un message d'erreur temporaire
   function showError(message, targetElement) {
     // Supprimer les anciens messages d'erreur
@@ -266,6 +270,7 @@
     const exercises = [];
     exerciseCards.forEach(card=>{
       const name = card.querySelector('.exercise-name').value.trim();
+      const muscle = (card.querySelector('.exercise-muscle')?.value || '').trim();
       if(!name) return; // skip empty
       const sets = [];
       const setRows = Array.from(card.querySelectorAll('.set-row'));
@@ -275,7 +280,7 @@
         if(!reps && !weight) return; // skip empty rows
         sets.push({ reps, weight });
       });
-      if(sets.length>0) exercises.push({ name, sets });
+      if(sets.length>0) exercises.push({ name, muscle, sets });
     });
 
     if(exercises.length===0){ 
@@ -283,9 +288,43 @@
       return; 
     }
 
+    // Save to localStorage (legacy)
     const items = loadWorkouts();
     items.push({ date, notes, exercises });
     saveWorkouts(items);
+
+    // Save to database
+    const payload = {
+      date,
+      notes,
+      exercises: exercises.map(ex => ({
+        name: ex.name,
+        muscle: ex.muscle || '',
+        // send raw sets so server can aggregate properly
+        sets: ex.sets.map(s => ({
+          reps: (s.reps || '').trim(),
+          weight: (s.weight || '').trim()
+        }))
+      }))
+    };
+
+    fetch('services/seances/save_seance.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => {
+      const msgTarget = document.getElementById('summary');
+      if(data.success){
+        console.log('✓ Séance sauvegardée en base:', data.inserted, 'exercices');
+        if (msgTarget) { msgTarget.textContent = `${loadWorkouts().length} séance(s) enregistrée(s) • dernière sauvegarde OK`; }
+      } else {
+        console.warn('Erreur sauvegarde DB:', data.error);
+        if (msgTarget) { msgTarget.textContent = '⚠️ Erreur de sauvegarde en base. Vos données locales sont enregistrées.'; }
+      }
+    })
+    .catch(err => console.error('Erreur réseau:', err));
 
     // Réinitialiser le formulaire : vider la liste d'exercices et ajouter un exercice vide par défaut
     form.reset();

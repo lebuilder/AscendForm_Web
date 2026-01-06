@@ -1,19 +1,3 @@
-
-:root{
-  --night-bg: #0b1d3d;
-  --accent: #6fd3ff;
-}
-html,body{
-  height:100%;
-}
-body{
-  background: var(--night-bg);
-  color: #e6f6ff;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-}
-
 .card{ 
   background: rgba(255,255,255,0.04); 
   border: none; 
@@ -45,24 +29,6 @@ body{
     0 12px 48px 0 rgba(0,0,0,0.45),
     inset 0 1px 0 0 rgba(255,255,255,0.12);
 }
-
-.navbar-brand{ letter-spacing:0.4px; }
-
-/* Taille du logo dans la navbar (responsive)
-   - version desktop: 56x56
-   - version mobile: 40x40
-*/
-.navbar-brand .navbar-logo{
-  width: 56px;
-  height: 56px;
-  object-fit: contain;
-}
-
-@media (max-width: 576px){
-  .navbar-brand .navbar-logo{ width:40px; height:40px; }
-}
-
-header{ background: linear-gradient(180deg, rgba(0,0,0,0.15), transparent); }
 
 .form-label,
 .form-check-label{
@@ -169,13 +135,11 @@ textarea:focus{
 }
 
 @media (max-width: 768px){
-  .navbar-brand span{ font-size: 1rem; }
   .card{ margin-bottom: 1rem; }
   .btn-lg{ padding: 0.5rem 1rem; font-size: 1rem; }
 }
 
 @media (max-width: 576px){
-  header{ padding: 2rem 1rem; }
   .display-5{ font-size: 1.5rem; }
   .lead{ font-size: 1rem; }
   .card-body{ padding: 1rem; }
@@ -291,7 +255,7 @@ textarea:focus{
 #clearExercisesBtn:hover::before {
   opacity: 1;
   left: 10px;
-  animation: rotate-reset 1s linear infinite;
+  animation: rotate-reset 1s linear 1;
 }
 
 #clearExercisesBtn:active {
@@ -346,7 +310,7 @@ textarea:focus{
 .exercise-card .btn-outline-light:hover::after {
   right: 10px;
   opacity: 1;
-  animation: sparkle 0.6s ease-in-out infinite;
+  animation: sparkle 0.6s ease-in-out 1;
 }
 
 #addExerciseBtn:active,
@@ -356,8 +320,9 @@ textarea:focus{
 }
 
 @keyframes sparkle {
-  0%, 100% { transform: translateY(-50%) scale(1); }
+  0% { transform: translateY(-50%) scale(1) rotate(0deg); }
   50% { transform: translateY(-50%) scale(1.2) rotate(180deg); }
+  100% { transform: translateY(-50%) scale(1) rotate(360deg); }
 }
 
 @keyframes pulse-green {
@@ -430,7 +395,43 @@ textarea:focus{
   box-shadow: 
     0 8px 32px rgba(0,0,0,0.3),
     inset 0 1px 0 rgba(255,255,255,0.1);
+  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
+}
+
+/* Sélecteur du groupe musculaire: fond bleu + texte bleu clair */
+/* Forcer style du select (désactiver apparence native) */
+.form-select.exercise-muscle,
+.form-select.exercise-muscle:focus {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Forcer totalement la couleur de fond sur le bleu du background */
+  --bs-form-select-bg: var(--night-bg) !important;
+  background: var(--night-bg) !important;
+  background-color: var(--night-bg) !important;
+  background-image: none !important;
+  color: var(--accent) !important;            /* bleu clair pour l'écriture */
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 0.15rem rgba(111, 211, 255, 0.25) !important;
+}
+
+.form-select.exercise-muscle option {
+  background: var(--night-bg) !important; /* garantir le fond du menu déroulant */
+  background-color: var(--night-bg) !important;
+  color: var(--accent) !important;
+}
+
+.form-select.exercise-muscle option[disabled] {
+  color: var(--accent) !important; /* libellé "— Groupe musculaire —" en bleu clair */
+}
+
+/* Sélecteur super spécifique si d'autres CSS écrasent nos styles */
+.exercise-card .form-select.exercise-muscle,
+.exercise-card .form-select.exercise-muscle:focus {
+  background: var(--night-bg) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
 }
 
 .confirm-reset.show {
