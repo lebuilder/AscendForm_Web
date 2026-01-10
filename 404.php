@@ -28,6 +28,7 @@ http_response_code(404);
 
 				<div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
 					<a href="<?= $base ?>/index.php" class="btn btn-accent align-items-center text-white">Retour à l'accueil</a>
+					<p>test</p>
 				</div>
 
 				<div class="mt-4 small ">Code d'erreur: 404 • AscendForm</div>
