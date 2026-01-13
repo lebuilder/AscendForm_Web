@@ -187,12 +187,10 @@ for ($i = 23; $i >= 0; $i--) {
     $failCounts[] = $failTrendMap[$h] ?? 0;
 }
 
-// Alerte IP si une IP a dépassé 15 échecs sur 10 minutes (informations live) déjà géré au niveau login mais surface si block actif
 foreach ($blockedIps as $bip) {
     $alerts[] = "IP bloquée: " . htmlspecialchars($bip['ip']) . " jusqu'à " . date('H:i', strtotime($bip['blocked_until']));
 }
 
-// Simple alerts
 $alerts = [];
 if ($failedLastHour >= 5) {
     $alerts[] = 'Nombre élevé de tentatives échouées dans l\'heure ('.$failedLastHour.')';
@@ -201,7 +199,6 @@ if ($usersNoLogin > ($totalUsers * 0.7) && $totalUsers > 10) {
     $alerts[] = 'Beaucoup d\'utilisateurs sans connexion historique ('.$usersNoLogin.')';
 }
 
-// JSON for charts
 $signupLabels = array_keys($signupTrend);
 $signupValues = array_values($signupTrend);
 $loginLabels = array_keys($loginTrend);

@@ -124,7 +124,6 @@ SQL;
         END;
     ");
 
-    // 4) Migration: ajouter colonne is_admin si elle n'existe pas
     $columns = $pdo->query("PRAGMA table_info(clients)")->fetchAll(PDO::FETCH_ASSOC);
     $hasIsAdmin = false;
     foreach ($columns as $col) {

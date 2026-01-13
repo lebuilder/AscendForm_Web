@@ -1,5 +1,4 @@
 <?php
-// Custom 404 page
 http_response_code(404);
 ?>
 <!DOCTYPE html>
