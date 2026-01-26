@@ -73,7 +73,7 @@ try {
     web_begin();
     // 1) Connexion SQLite locale
     $dbDir = __DIR__ . '/sql';
-    $dbFile = $dbDir . '/clients.db';
+    $dbFile = $dbDir . '/bdd.db';
     
     if (!is_dir($dbDir)) {
         mkdir($dbDir, 0755, true);
@@ -85,34 +85,176 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
-    
-    $pdo->exec('PRAGMA foreign_keys = ON');
-    out("Base SQLite créée/présente: {$dbFile}");
 
-    // 2) Création de la table clients (syntaxe SQLite)
+
+    // 2) Création de la table compte (syntaxe SQLite)
         $sqlCreate = <<<SQL
-CREATE TABLE IF NOT EXISTS clients (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  email TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,
-  first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL,
-  phone TEXT,
-  avatar_path TEXT,
-  birthdate TEXT,
-  height_cm REAL,
-  weight_kg REAL,
-  is_admin INTEGER NOT NULL DEFAULT 0,
-  last_login_at TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-SQL;
+            CREATE TABLE IF NOT EXISTS compte (
+                id_compte INT AUTO_INCREMENT PRIMARY KEY,
+                mail VARCHAR(255) NOT NULL UNIQUE,
+                mdp VARCHAR(255) NOT NULL,
+                ip VARCHAR(45),
+                derniere_connection DEFAULT (datetime('now'))
+            );
+        SQL;
     $pdo->exec($sqlCreate);
+    out("Table compte créée");
+
+    // 3) Création de la table client (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE IF NOT EXISTS client (
+            id_client INT PRIMARY KEY,
+            telephone VARCHAR(20),
+            taille DOUBLE,
+            poids DOUBLE,
+            nom_client VARCHAR(100),
+            prenom_client VARCHAR(100),
+            date_anniv DATE,
+            age INT,
+            CONSTRAINT fk_client_compte
+                FOREIGN KEY (id_client)
+                REFERENCES compte(id_compte)
+                ON DELETE CASCADE
+        );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table client créée");
+
+    // 4) Création de la table admin (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE IF NOT EXISTS admin (
+            id_admin INT PRIMARY KEY,
+            CONSTRAINT fk_admin_compte
+                FOREIGN KEY (id_admin)
+                REFERENCES compte(id_compte)
+                ON DELETE CASCADE
+        );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table admin créée");
+
+    // 5) Création de la table message (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE message (
+                id_message INT AUTO_INCREMENT PRIMARY KEY,
+                sujet VARCHAR(255),
+                status VARCHAR(50),
+                repondu_le DATE,
+                id_compte INT,
+                id_reponse INT,
+                CONSTRAINT fk_message_compte
+                    FOREIGN KEY (id_compte)
+                    REFERENCES compte(id_compte)
+                    ON DELETE CASCADE,
+                CONSTRAINT fk_message_reponse
+                    FOREIGN KEY (id_reponse)
+                    REFERENCES message(id_message)
+            );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table message créée");
+
+    // 6) Création de la table logs (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE logs (
+                id_logs INT AUTO_INCREMENT PRIMARY KEY,
+                cree_le DATE,
+                mis_a_jour_le DATE,
+                id_compte INT,
+                CONSTRAINT fk_logs_compte
+                    FOREIGN KEY (id_compte)
+                    REFERENCES compte(id_compte)
+                    ON DELETE CASCADE
+            );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table logs créée");
+
+    // 7) Création de la table ip_bloque (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE ip_bloque (
+                id_ip_bloque INT AUTO_INCREMENT PRIMARY KEY,
+                bloque_jusqu_a DATE,
+                raison VARCHAR(255),
+                id_logs INT,
+                id_compte INT,
+                CONSTRAINT fk_ip_logs
+                    FOREIGN KEY (id_logs)
+                    REFERENCES logs(id_logs)
+                    ON DELETE CASCADE,
+                CONSTRAINT fk_ip_compte
+                    FOREIGN KEY (id_compte)
+                    REFERENCES compte(id_compte)
+                    ON DELETE CASCADE
+            );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table ip_bloque créée");
+
+    // 9) Création de la table exercice (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE exercice (
+                id_exo INT AUTO_INCREMENT PRIMARY KEY,
+                nom_exo VARCHAR(255),
+                muscle_cible VARCHAR(255),
+                url_video VARCHAR(255)
+            );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table exercice créée");
     
-    // Index pour performance
-    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_clients_last_first ON clients(last_name, first_name)');
-    out("Table créée/présente: clients");
+    // 10) Création de la table client_exercice (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE client_exercice (
+                id_client INT,
+                id_exo INT,
+                PRIMARY KEY (id_client, id_exo),
+                CONSTRAINT fk_ce_client
+                    FOREIGN KEY (id_client)
+                    REFERENCES client(id_client)
+                    ON DELETE CASCADE,
+                CONSTRAINT fk_ce_exercice
+                    FOREIGN KEY (id_exo)
+                    REFERENCES exercice(id_exo)
+                    ON DELETE CASCADE
+            );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table client_exercice créée");
+
+    // 11) Création de la table video (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE video (
+                id_video INT AUTO_INCREMENT PRIMARY KEY,
+                url_video VARCHAR(255),
+                titre_video VARCHAR(255),
+                description_video TEXT,
+                id_exo INT UNIQUE,
+                CONSTRAINT fk_video_exercice
+                    FOREIGN KEY (id_exo)
+                    REFERENCES exercice(id_exo)
+                    ON DELETE CASCADE
+            );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table vidéo créée");
+
+    // 11) Création de la table video (syntaxe SQLite)
+        $sqlCreate = <<<SQL
+            CREATE TABLE photo (
+                id_photo INT AUTO_INCREMENT PRIMARY KEY,
+                chemin_photo VARCHAR(255),
+                titre_photo VARCHAR(255),
+                description_photo TEXT,
+                id_exo INT UNIQUE,
+                CONSTRAINT fk_photo_exercice
+                    FOREIGN KEY (id_exo)
+                    REFERENCES exercice(id_exo)
+                    ON DELETE CASCADE
+            );
+        SQL;
+    $pdo->exec($sqlCreate);
+    out("Table photo créée");
 
     // 3) Trigger pour auto-update du champ updated_at
     $pdo->exec("
@@ -123,27 +265,35 @@ SQL;
             UPDATE clients SET updated_at = datetime('now') WHERE id = NEW.id;
         END;
     ");
+    out("Trigger client_updated_at créé");
 
-    // 4) Migration: ajouter colonne is_admin si elle n'existe pas
-    $columns = $pdo->query("PRAGMA table_info(clients)")->fetchAll(PDO::FETCH_ASSOC);
-    $hasIsAdmin = false;
-    foreach ($columns as $col) {
-        if ($col['name'] === 'is_admin') {
-            $hasIsAdmin = true;
-            break;
-        }
-    }
-    if (!$hasIsAdmin) {
-        $pdo->exec('ALTER TABLE clients ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0');
-        out("Colonne is_admin ajoutée à la table clients");
-    }
+
+    // 4) calcule l'age automatiquement
+    $pdo->exec("
+        CREATE TRIGGER calcul_age_before_insert
+        BEFORE INSERT ON client
+        FOR EACH ROW
+        BEGIN
+            SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.date_anniv, CURDATE());
+        END$$
+
+        CREATE TRIGGER calcul_age_before_update
+        BEFORE UPDATE ON client
+        FOR EACH ROW
+        BEGIN
+            SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.date_anniv, CURDATE());
+        END$$
+        ");
+    out("Trigger calcul age auto créé");
 
     // 5) Seed utilisateur de démo (idempotent)
-    $email = 'demo@local.test';
-    $hash = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'; // password
-    $stmt = $pdo->prepare('INSERT INTO clients (email, password_hash, first_name, last_name, is_admin) VALUES (:email, :hash, :fn, :ln, 0)');
+    $email = 'admin@ascendform.local';
+    $hash = password_hash('admin123',PASSWORD_DEFAULT);
+    $stmt = $pdo->prepare('INSERT INTO compte(id, mail, mdp) VALUES (:id, :email, :mdp)');
+    $stmt_admin = $pdo->prepare('INSERT INTO admin(id_admin) VALUES (:id)');
     try {
-        $stmt->execute([':email' => $email, ':hash' => $hash, ':fn' => 'Demo', ':ln' => 'User']);
+        $stmt->execute([':id' => 1, ':email' => $email, ':mdp' => $hash]);
+        $stmt_admin->execute([':id' => 1]);
         out("Utilisateur de démo inséré: {$email}");
     } catch (PDOException $e) {
         if ($e->getCode() === '23000') { // duplicate key
@@ -152,126 +302,26 @@ SQL;
             throw $e;
         }
     }
+    out("Compte admin créé");
     
-    // 6) Seed admin (admin@ascendform.local / admin123)
-    $adminEmail = 'admin@ascendform.local';
-    $adminHash = password_hash('admin123', PASSWORD_DEFAULT);
-    $stmtAdmin = $pdo->prepare('INSERT INTO clients (email, password_hash, first_name, last_name, is_admin) VALUES (:email, :hash, :fn, :ln, 1)');
+    // 6) Seed utilisateur de démo (idempotent)
+    $email = 'demo@local.test';
+    $hash = password_hash('password',PASSWORD_DEFAULT);
+    $stmt = $pdo->prepare('INSERT INTO compte(id, mail, mdp) VALUES (:id, :email, :mdp)');
+    $stmt_client = $pdo->prepare('INSERT INTO client (id_client, telephone, taille, poids, nom_client, prenom_client, date_anniv) VALUES (:id, :tel, :taille, :poids, :nom, :prenom, :date_anniversaire)');
     try {
-        $stmtAdmin->execute([':email' => $adminEmail, ':hash' => $adminHash, ':fn' => 'Admin', ':ln' => 'AscendForm']);
-        out("Utilisateur admin inséré: {$adminEmail}");
+        $stmt->execute([':id' => 1, ':email' => $email, ':mdp' => $hash]);
+        $stmt->execute([':id' => 1, ':tel' => '0621587426', ':taille' => 165, ':poids' => 65, ':nom' => 'Eude', ':prenom' => 'Jean', ':date_anniversaire' => '2025-01-07']);
+        out("Utilisateur de démo inséré: {$email}");
     } catch (PDOException $e) {
-        if ($e->getCode() === '23000') {
-            out("Utilisateur admin déjà présent: {$adminEmail}");
+        if ($e->getCode() === '23000') { // duplicate key
+            out("Utilisateur de démo déjà présent: {$email}");
         } else {
             throw $e;
         }
     }
+    out("Compte client créé");
 
-    // 7) Vérification
-    $count = (int)$pdo->query('SELECT COUNT(*) FROM clients')->fetchColumn();
-    out("Clients en base: {$count}");
-    // 8) Initialiser une seconde base SQLite: exercices.db
-    $exDbFile = $dbDir . '/exercices.db';
-    $exPdo = new PDO('sqlite:' . $exDbFile, null, null, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-    ]);
-    $exPdo->exec('PRAGMA foreign_keys = ON');
-    out("Base SQLite créée/présente: {$exDbFile}");
-
-    // 8b) Initialiser base seances.db pour l'enregistrement des séances d'entraînement
-    $seanceDbFile = $dbDir . '/seances.db';
-    $seancePdo = new PDO('sqlite:' . $seanceDbFile, null, null, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-    ]);
-    $seancePdo->exec('PRAGMA foreign_keys = ON');
-    out("Base SQLite créée/présente: {$seanceDbFile}");
-
-    $sqlCreateSeance = <<<SQL
-CREATE TABLE IF NOT EXISTS seances (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  date TEXT NOT NULL,
-  exercice_name TEXT NOT NULL,
-  muscle_group TEXT,
-  sets INTEGER NOT NULL DEFAULT 0,
-  reps INTEGER NOT NULL DEFAULT 0,
-  weight_kg REAL NOT NULL DEFAULT 0,
-  notes TEXT,
-  duration_minutes INTEGER,
-  created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-SQL;
-    $seancePdo->exec($sqlCreateSeance);
-    $seancePdo->exec('CREATE INDEX IF NOT EXISTS idx_seances_user_id ON seances(user_id)');
-    $seancePdo->exec('CREATE INDEX IF NOT EXISTS idx_seances_date ON seances(date)');
-    $seancePdo->exec('CREATE INDEX IF NOT EXISTS idx_seances_muscle ON seances(muscle_group)');
-    out("Table créée/présente: seances");
-
-    $sqlCreateEx = <<<SQL
-CREATE TABLE IF NOT EXISTS exercices (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  target_muscle TEXT NOT NULL,
-  photo_path TEXT,
-  video_url TEXT,
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-SQL;
-    $exPdo->exec($sqlCreateEx);
-    $exPdo->exec('CREATE INDEX IF NOT EXISTS idx_exercices_name ON exercices(name)');
-    $exPdo->exec('CREATE INDEX IF NOT EXISTS idx_exercices_muscle ON exercices(target_muscle)');
-
-    $exPdo->exec("CREATE TRIGGER IF NOT EXISTS exercices_updated_at\n        AFTER UPDATE ON exercices\n        FOR EACH ROW\n        BEGIN\n            UPDATE exercices SET updated_at = datetime('now') WHERE id = NEW.id;\n        END;\n    ");
-    out("Table créée/présente: exercices");
-
-    // Migration: ajouter colonne muscles_cibles si elle n'existe pas
-    $exColumns = $exPdo->query("PRAGMA table_info(exercices)")->fetchAll(PDO::FETCH_ASSOC);
-    $hasMusclesCibles = false;
-    foreach ($exColumns as $col) {
-        if ($col['name'] === 'muscles_cibles') {
-            $hasMusclesCibles = true;
-            break;
-        }
-    }
-    if (!$hasMusclesCibles) {
-        $exPdo->exec('ALTER TABLE exercices ADD COLUMN muscles_cibles TEXT');
-        out("Colonne muscles_cibles ajoutée à la table exercices");
-    }
-
-    // 9) Initialiser base messages.db pour le système de contact/chat
-    $msgDbFile = $dbDir . '/messages.db';
-    $msgPdo = new PDO('sqlite:' . $msgDbFile, null, null, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false,
-    ]);
-    $msgPdo->exec('PRAGMA foreign_keys = ON');
-    out("Base SQLite créée/présente: {$msgDbFile}");
-
-    $sqlCreateMsg = <<<SQL
-CREATE TABLE IF NOT EXISTS messages (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id INTEGER NOT NULL,
-  user_email TEXT NOT NULL,
-  user_name TEXT,
-  subject TEXT NOT NULL,
-  user_message TEXT NOT NULL,
-  admin_reply TEXT,
-  status TEXT NOT NULL DEFAULT 'pending',
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  replied_at TEXT
-);
-SQL;
-    $msgPdo->exec($sqlCreateMsg);
-    $msgPdo->exec('CREATE INDEX IF NOT EXISTS idx_messages_user_id ON messages(user_id)');
-    $msgPdo->exec('CREATE INDEX IF NOT EXISTS idx_messages_status ON messages(status)');
-    out("Table créée/présente: messages");
 
     out('Initialisation terminée ✔', 'ok');
     out('Vous pouvez vous connecter avec:');
