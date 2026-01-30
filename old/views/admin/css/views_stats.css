@@ -1,0 +1,96 @@
+/* AscendForm - Styles pour views_stats.php */
+
+.admin-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 2.5rem 1rem 0 1rem;
+}
+
+.admin-card {
+    background: rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    max-width: 1400px;
+    margin: 2.5rem auto;
+}
+
+.stat-card-mini {
+    background: rgba(111, 211, 255, 0.08);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(111, 211, 255, 0.2);
+    transition: all 0.3s;
+}
+
+.stat-card-mini:hover {
+    transform: translateY(-5px);
+    border-color: #6fd3ff;
+    box-shadow: 0 8px 24px rgba(111, 211, 255, 0.2);
+}
+
+.stat-card-mini h3 {
+    font-size: 2rem;
+    margin: 0;
+    color: #6fd3ff;
+    font-weight: bold;
+}
+
+.stat-card-mini p {
+    margin: 0.5rem 0 0 0;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.chart-container {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(111, 211, 255, 0.15);
+    position: relative;
+    height: 460px;
+}
+
+.chart-container h4 {
+    color: #6fd3ff;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Stats summary cards at the top */
+.admin-card .stat-card {
+    background: rgba(111, 211, 255, 0.08);
+    border: 1px solid rgba(111, 211, 255, 0.2);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 86px;
+}
+
+.admin-card .stat-card .stat-number {
+    font-size: 2rem;
+    line-height: 1;
+    font-weight: 800;
+    color: #6fd3ff;
+}
+
+.admin-card .stat-card .stat-label {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+    color: #cfdbe6;
+    text-transform: none;
+    letter-spacing: 0;
+}

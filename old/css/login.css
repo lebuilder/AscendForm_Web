@@ -1,0 +1,117 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+#login,
+#register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 550px;
+  margin: auto;
+}
+
+#login .card,
+#register .card {
+  background: var(--night-bg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.37),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  width: 100%;
+}
+
+#login .card-body,
+#register .card-body {
+  background: var(--night-bg);
+  padding: 2rem;
+}
+
+.login-logo {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+#login .card-title,
+#register .card-title {
+  color: #f8fbff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+#login .form-label,
+#register .form-label {
+  color: #ffffff;
+}
+
+#login .form-control,
+#register .form-control {
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+#login .form-control:focus,
+#register .form-control:focus {
+  box-shadow: 0 0 0 0.15rem rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+#login .btn-primary,
+#register .btn-primary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+#login .btn-primary:hover,
+#register .btn-primary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Styled error messages inside login/register forms */
+#login .alert-danger,
+#register .alert-danger {
+  background: linear-gradient(135deg, rgba(220, 53, 69, 0.2), rgba(220, 53, 69, 0.1));
+  border: 1px solid rgba(220, 53, 69, 0.5);
+  border-left: 4px solid #ff4757;
+  color: #ffffff;
+  font-size: 0.9rem;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.15);
+  animation: slideInError 0.4s ease-out;
+}
+
+#login .alert-danger::before,
+#register .alert-danger::before {
+  content: '⚠️';
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
+  filter: drop-shadow(0 0 3px rgba(255, 71, 87, 0.6));
+}
+
+@keyframes slideInError {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
